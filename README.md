@@ -184,7 +184,6 @@ All advice is combined and shown on the **Dashboard** in a single “Personalize
 
 ---
 
-## Resume / Viva Description
 
 **Fitness Tracker Web Application**  
 Full-stack Django application for tracking fitness and nutrition. Implemented **user authentication** (register, login, logout) and **user profiles** (age, gender, height, weight, goal). Built a **health calculations module** using **BMI**, **BMR (Mifflin–St Jeor)**, and derived **daily calorie and macro targets** (protein, fat, carbs) and **water intake**. Added **workout logging** (exercise, sets, reps, duration, home/gym) and **nutrition logging** (meals, macros, water) with **required vs consumed** comparison on the dashboard. Implemented a **rule-based advice system** (BMI categories, protein and water shortfalls, goal-based tips). Designed a **Bootstrap-based UI** with a central **dashboard** showing metrics, progress bars, recent workouts, and today’s nutrition. Used **Django ORM**, **model–view–template (MVC)** structure, **form validation**, and **login-required** decorators for protected pages. Suitable for placement projects, resumes, and viva discussions on full-stack development and fitness/health logic.
