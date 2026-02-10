@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Nutrition - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1><i class="bi bi-egg me-2"></i>Nutrition Log</h1>
+  <a href="{% url 'nutrition:add' %}" class="btn btn-primary-custom">Add Food Entry</a>
+</div>
+
+{% if required %}
+<div class="card card-custom mb-4">
+  <div class="card-header">Today's Summary (Required vs Consumed)</div>
+  <div class="card-body">
+    <div class="row text-center">
+      <div class="col"><div class="text-muted small">Calories</div><strong>{{ consumed.calories|floatformat:0 }} / {{ required.daily_calories|floatformat:0 }}</strong></div>
+      <div class="col"><div class="text-muted small">Protein (g)</div><strong>{{ consumed.protein|floatformat:0 }} / {{ required.daily_protein_g|floatformat:0 }}</strong></div>
+      <div class="col"><div class="text-muted small">Fat (g)</div><strong>{{ consumed.fat|floatformat:0 }} / {{ required.daily_fat_g|floatformat:0 }}</strong></div>
+      <div class="col"><div class="text-muted small">Carbs (g)</div><strong>{{ consumed.carbs|floatformat:0 }} / {{ required.daily_carbs_g|floatformat:0 }}</strong></div>
+      <div class="col"><div class="text-muted small">Water (L)</div><strong>{{ consumed.water_ml|floatformat:2 }} / {{ required.daily_water_liters|floatformat:2 }}</strong></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="card card-custom">
+  <div class="card-body p-0">
+    {% if logs %}
+      <div class="table-responsive">
+        <table class="table table-custom mb-0">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Meal</th>
+              <th>Protein</th>
+              <th>Fat</th>
+              <th>Carbs</th>
+              <th>Calories</th>
+              <th>Water</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              <tr>
+                <td>{{ log.date }}</td>
+                <td>{{ log.meal_name }}</td>
+                <td>{{ log.protein_g }} g</td>
+                <td>{{ log.fat_g }} g</td>
+                <td>{{ log.carbs_g }} g</td>
+                <td>{{ log.total_calories }}</td>
+                <td>{{ log.water_ml }} ml</td>
+                <td>
+                  <a href="{% url 'nutrition:edit' log.pk %}" class="btn btn-sm btn-outline-light me-1">Edit</a>
+                  <a href="{% url 'nutrition:delete' log.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="p-4 mb-0 text-muted">No nutrition entries yet. <a href="{% url 'nutrition:add' %}">Log your first meal</a>.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Register - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card card-custom shadow">
+      <div class="card-header"><i class="bi bi-person-plus me-2"></i>Create Account</div>
+      <div class="card-body">
+        <form method="post" action="{% url 'users:register' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_username" class="form-label">Username</label>
+            <input type="text" name="username" id="id_username" class="form-control" required
+                   maxlength="150" value="{{ form.username.value|default:'' }}" placeholder="Username">
+            {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            <input type="email" name="email" id="id_email" class="form-control" required
+                   value="{{ form.email.value|default:'' }}" placeholder="Email">
+            {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label for="id_password1" class="form-label">Password</label>
+            <input type="password" name="password1" id="id_password1" class="form-control" required placeholder="Password">
+            {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors.0 }}</div>{% endif %}
+            <div class="form-text text-muted">At least 8 characters, not too common.</div>
+          </div>
+          <div class="mb-3">
+            <label for="id_password2" class="form-label">Confirm Password</label>
+            <input type="password" name="password2" id="id_password2" class="form-control" required placeholder="Confirm password">
+            {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors.0 }}</div>{% endif %}
+          </div>
+          <button type="submit" class="btn btn-primary-custom btn-lg w-100">Register</button>
+        </form>
+        <p class="mt-3 mb-0 text-center text-muted">Already have an account? <a href="{% url 'users:login' %}" class="text-decoration-none" style="color: #e94560;">Login</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

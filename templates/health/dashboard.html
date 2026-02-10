@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Fitness Tracker{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+
+<!-- Health metrics cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="card card-custom h-100">
+      <div class="card-body text-center">
+        <div class="text-muted small">BMI</div>
+        <div class="metric-value">{{ metrics.bmi }}</div>
+        <div class="badge bg-secondary">{{ metrics.bmi_category }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card card-custom h-100">
+      <div class="card-body text-center">
+        <div class="text-muted small">BMR (kcal/day)</div>
+        <div class="metric-value">{{ metrics.bmr }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card card-custom h-100">
+      <div class="card-body text-center">
+        <div class="text-muted small">Daily Calories</div>
+        <div class="metric-value">{{ metrics.daily_calories }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card card-custom h-100">
+      <div class="card-body text-center">
+        <div class="text-muted small">Water (L/day)</div>
+        <div class="metric-value">{{ metrics.daily_water_liters }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Macros & today's intake -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="card card-custom">
+      <div class="card-header">Daily Macros (Target)</div>
+      <div class="card-body">
+        <ul class="list-unstyled mb-0">
+          <li class="d-flex justify-content-between py-2 border-bottom border-secondary"><span>Protein</span><strong>{{ metrics.daily_protein_g }} g</strong></li>
+          <li class="d-flex justify-content-between py-2 border-bottom border-secondary"><span>Fat</span><strong>{{ metrics.daily_fat_g }} g</strong></li>
+          <li class="d-flex justify-content-between py-2"><span>Carbs</span><strong>{{ metrics.daily_carbs_g }} g</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card card-custom">
+      <div class="card-header">Today's Intake vs Target</div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="d-flex justify-content-between small"><span>Calories</span><span>{{ consumed_calories|floatformat:0 }} / {{ required_calories|floatformat:0 }}</span></div>
+          <div class="progress progress-custom" style="height: 8px;">
+            <div class="progress-bar" style="width: {{ progress_calories }}%;"></div>
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="d-flex justify-content-between small"><span>Protein (g)</span><span>{{ consumed_protein|floatformat:0 }} / {{ required_protein|floatformat:0 }}</span></div>
+          <div class="progress progress-custom" style="height: 8px;">
+            <div class="progress-bar" style="width: {{ progress_protein }}%;"></div>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex justify-content-between small"><span>Water (L)</span><span>{{ consumed_water|floatformat:2 }} / {{ required_water|floatformat:2 }}</span></div>
+          <div class="progress progress-custom" style="height: 8px;">
+            <div class="progress-bar" style="width: {{ progress_water }}%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Smart advice -->
+{% if advice_list %}
+<div class="card card-custom mb-4">
+  <div class="card-header"><i class="bi bi-lightbulb me-2"></i>Personalized Advice</div>
+  <div class="card-body">
+    <ul class="mb-0">
+      {% for tip in advice_list %}
+        <li class="mb-2">{{ tip }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endif %}
+
+<!-- Workout summary & recent -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card card-custom h-100">
+      <div class="card-header">This Week's Workouts</div>
+      <div class="card-body">
+        <p class="mb-1">Total sets: <strong>{{ workout_summary.total_sets|default:0 }}</strong></p>
+        <p class="mb-0">Total reps: <strong>{{ workout_summary.total_reps|default:0 }}</strong></p>
+        <a href="{% url 'workouts:add' %}" class="btn btn-primary-custom btn-sm mt-2">Add Workout</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card card-custom">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Recent Workouts</span>
+        <a href="{% url 'workouts:list' %}" class="btn btn-sm btn-outline-light">View all</a>
+      </div>
+      <div class="card-body p-0">
+        {% if recent_workouts %}
+          <div class="table-responsive">
+            <table class="table table-custom mb-0">
+              <thead><tr><th>Date</th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Location</th></tr></thead>
+              <tbody>
+                {% for w in recent_workouts %}
+                  <tr>
+                    <td>{{ w.date }}</td>
+                    <td>{{ w.exercise_name }}</td>
+                    <td>{{ w.sets }}</td>
+                    <td>{{ w.reps }}{% if w.duration_minutes %} / {{ w.duration_minutes }} min{% endif %}</td>
+                    <td>{{ w.get_location_display }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="p-3 mb-0 text-muted">No workouts this week. <a href="{% url 'workouts:add' %}">Add one</a>.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Today's nutrition -->
+<div class="card card-custom">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Today's Nutrition</span>
+    <a href="{% url 'nutrition:add' %}" class="btn btn-sm btn-primary-custom">Add Entry</a>
+  </div>
+  <div class="card-body p-0">
+    {% if nutrition_today %}
+      <div class="table-responsive">
+        <table class="table table-custom mb-0">
+          <thead><tr><th>Meal</th><th>Protein</th><th>Fat</th><th>Carbs</th><th>Cal</th><th>Water</th></tr></thead>
+          <tbody>
+            {% for n in nutrition_today %}
+              <tr>
+                <td>{{ n.meal_name }}</td>
+                <td>{{ n.protein_g }} g</td>
+                <td>{{ n.fat_g }} g</td>
+                <td>{{ n.carbs_g }} g</td>
+                <td>{{ n.total_calories }}</td>
+                <td>{{ n.water_ml }} ml</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="p-3 mb-0 text-muted">No food entries today. <a href="{% url 'nutrition:add' %}">Log your first meal</a>.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
